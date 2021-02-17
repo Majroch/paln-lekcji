@@ -46,12 +46,12 @@ async def setup():
     client = VulcanHebe(keystore, account)
     await client.select_student()
 
-    grades = await client.data.get_grades(date_from=target_date)
-    tmp = []
-    async for grade in grades:
-        tmp.append(grade)
-
-    grades = tmp
+#    grades = await client.data.get_grades(date_from=target_date)
+#    tmp = []
+#    async for grade in grades:
+#        tmp.append(grade)
+#
+#    grades = tmp
 
     lessons = await client.data.get_lessons(date_from=target_date)
     tmp = []
