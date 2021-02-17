@@ -84,9 +84,11 @@ if __name__ == "__main__":
     all_info = {}
 
     for lesson in lessons:
-        all_info[lesson.time.position] = [lesson]
+        if lesson.visible:
+            all_info[lesson.time.position] = [lesson]
     for att in attendance:
-        all_info[att.time.position].append(att)
+        if att.time.position in all_info.keys():
+            all_info[att.time.position].append(att)
 
     godziny_nieobecne = []
     for key in sorted(all_info):
@@ -97,6 +99,8 @@ if __name__ == "__main__":
                 godziny_nieobecne.append(str(all_info[key][1].time.position))
             elif symbol == "●":
                 symbol = "[green]" + symbol + "[/green]"
+            elif symbol == "s":
+                symbol = "[yellow]" + symbol + "[/yellow]"
         except:
             symbol = "[dim]N/A[/dim]"
 
