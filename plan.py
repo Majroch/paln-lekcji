@@ -6,6 +6,8 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
+from setup import setup
+
 try:
     target_date = datetime.date.fromisoformat(sys.argv[1])
 except:
@@ -15,43 +17,24 @@ grades = []
 lessons = []
 attendance = []
 
-async def setup():
+async def main():
     global grades
     global lessons
     global attendance
 
-    try:
-        with open("keystore.json", 'r') as file:
-            keystore = Keystore.load(file.read())
-    except FileNotFoundError:
-        print("No keystore found! Creating")
-        keystore = Keystore.create()
-    
-    try:
-        with open("account.json", 'r') as file:
-            account = Account.load(file.read())
-    except FileNotFoundError:
-        print("No account registered!")
-        token = input("Please, tell me your token: ")
-        symbol = input("Next is your symbol: ")
-        pin = input("And lastly, pin: ")
-    
-        account = await Account.register(keystore, token, symbol, pin)
-        with open("account.json", 'w') as file:
-            file.write(account.as_json)
-    
-    with open("keystore.json", "w") as file:
-        file.write(keystore.as_json)
-
-    client = VulcanHebe(keystore, account)
-    await client.select_student()
+    client = await setup()
 
     grades = await client.data.get_grades(date_from=target_date)
     tmp = []
+
+    print(grades)
+    print(type(grades))
+
     async for grade in grades:
         tmp.append(grade)
 
     grades = tmp
+    print(grades)
 
     lessons = await client.data.get_lessons(date_from=target_date)
     tmp = []
@@ -71,7 +54,7 @@ async def setup():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(setup())
+    loop.run_until_complete(main())
     
     console = Console()
     table = Table(show_header=True, header_style="bold magenta")
