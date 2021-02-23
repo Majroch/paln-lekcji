@@ -98,25 +98,34 @@ if __name__ == "__main__":
                 # print(cell)
                 if cell:
                     lesson = cell['lesson']
-                    lesson_name = lesson.subject.name
 
-                    name = lesson.subject.name
-                    if len(name) > 16:
-                        out = lesson.subject.code
+                    if lesson.subject:
+                        lesson_name = lesson.subject.name
+
+                        name = lesson.subject.name
+                        if len(name) > 16:
+                            out = lesson.subject.code
+                        else:
+                            out = lesson.subject.name
+                    elif lesson.event:
+                        out = '[dark_orange]' + lesson.event + '[/ dark_orange]'
                     else:
-                        out = lesson.subject.name
+                        out = 'NO_INFO'
 
                     att = cell.get('attendance', None)
                     if att:
-                        symbol = att.presence_type.symbol
-                        if symbol == "▬":
-                            symbol = "[red]" + symbol + "[/red]"
-                        elif symbol == "●":
-                            symbol = "[green]" + symbol + "[/green]"
-                        elif symbol == "s":
-                            symbol = "[yellow]" + symbol + "[/yellow]"
+                        if att.presence_type:
+                            symbol = att.presence_type.symbol
+                            if symbol == "▬":
+                                symbol = "[red]" + symbol + "[/red]"
+                            elif symbol == "●":
+                                symbol = "[green]" + symbol + "[/green]"
+                            elif symbol == "s":
+                                symbol = "[yellow]" + symbol + "[/yellow]"
+                        else:
+                            symbol = "[dim]b[/dim]"
                     else:
-                        symbol = "[dim]b[/dim]"
+                        symbol = "[dim]b[/dim]"  # repetition is good for learning, right?
                         
                     out = symbol + ' ' + out
                 else:
@@ -124,7 +133,7 @@ if __name__ == "__main__":
 
                 row.append(out)
             
-            print(row)
+            # print(row)
             table.add_row(*row)
 
         console.print(table)
