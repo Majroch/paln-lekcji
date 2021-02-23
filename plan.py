@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import asyncio, datetime, sys, random
+import argparse
+
 from vulcan import Keystore, Account, VulcanHebe
 from rich import print
 from rich.console import Console
@@ -10,16 +12,35 @@ from setup import setup
 
 MY_GROUP = 'Grupa 2'
 
-if len(sys.argv) > 1:
-    if sys.argv[1] == 'week':
-        target_date = 'week'
-    else:
-        try:
-            target_date = datetime.date.fromisoformat(sys.argv[1])
-        except:
-            target_date = datetime.datetime.now()
+parser = argparse.ArgumentParser(description='Displays lesson plan from Vulcan e-school system')
+day_group = parser.add_mutually_exclusive_group()
+day_group.add_argument('-w', '--week', help='display a weekly timetable', action='store_true')
+day_group.add_argument('-d', '--date', help='ISO8901 formatted date')
+
+group = parser.add_mutually_exclusive_group()
+group.add_argument('-g', '--group', help=f'set group (default: `{MY_GROUP}`)')
+group.add_argument('-b', '--both', help='display both groups', action='store_true')
+
+args = parser.parse_args()
+# print(args)
+
+# Week/one day
+if args.week:
+    target_date = 'week'
+elif args.date:
+    try:
+        target_date = datetime.date.fromisoformat(args.date)
+    except:
+        target_date = datetime.datetime.now()
 else:
     target_date = datetime.datetime.now()
+
+# Group/no group/set group
+if args.group:
+    MY_GROUP = args.group
+elif args.both:
+    MY_GROUP = None
+
 
 grades = []
 lessons = []
@@ -183,6 +204,10 @@ if __name__ == "__main__":
             name = all_info[key][0].subject.name
             if len(name) > 15:
                 name = all_info[key][0].subject.code
+
+            if not MY_GROUP:
+                if all_info[key][0].group:
+                    name = name + ' [dim](' + all_info[key][0].group.name + ')[/dim]'
                 
             table.add_row("[green]" + str(all_info[key][0].time.position) + "[/green]", all_info[key][0].time.displayed_time.split("-")[0], all_info[key][0].time.displayed_time.split("-")[1], name, symbol)
 
