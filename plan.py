@@ -8,6 +8,8 @@ from rich.panel import Panel
 
 from setup import setup
 
+MY_GROUP = 'Grupa 2'
+
 if len(sys.argv) > 1:
     if sys.argv[1] == 'week':
         target_date = 'week'
@@ -126,6 +128,11 @@ if __name__ == "__main__":
                             symbol = "[dim]b[/dim]"
                     else:
                         symbol = "[dim]b[/dim]"  # repetition is good for learning, right?
+
+
+                    # Append group name, if MY_GROUP not specified
+                    if lesson.group and not MY_GROUP:
+                        out = out + ' [dim](' + lesson.group.name + ')[/dim]'
                         
                     out = symbol + ' ' + out
                 else:
