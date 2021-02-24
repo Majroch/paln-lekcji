@@ -201,9 +201,20 @@ if __name__ == "__main__":
             except:
                 symbol = "[dim]N/A[/dim]"
 
-            name = all_info[key][0].subject.name
-            if len(name) > 15:
-                name = all_info[key][0].subject.code
+            lesson = all_info[key][0]
+
+            if lesson.subject:
+                name = lesson.subject.name
+
+                name = lesson.subject.name
+                if len(name) > 16:
+                    name = lesson.subject.code
+                else:
+                    name = lesson.subject.name
+            elif lesson.event:
+                name = '[dark_orange]' + lesson.event + '[/ dark_orange]'
+            else:
+                name = 'NO_INFO'
 
             if not MY_GROUP:
                 if all_info[key][0].group:
